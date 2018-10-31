@@ -1,6 +1,7 @@
 # Preface
 OSHGui project files for https://deadcell.cc/
-
+  
+What you can achieve with the provided drawing code:  
 ![image](https://i.imgur.com/93zfcLP.png)
 
 # Credits
