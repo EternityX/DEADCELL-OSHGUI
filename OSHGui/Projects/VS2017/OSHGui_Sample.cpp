@@ -1,4 +1,4 @@
-#include <windows.h>
+#include <Windows.h>
 #include <d3dx9.h>
 #undef MessageBox
 #undef DrawText
@@ -17,7 +17,7 @@ Input::WindowsMessage input;
 void InitializeOSHGui(LPDIRECT3DDEVICE9 device)
 {
 	//1. create our renderer, Direct3D9 in this case
-	auto renderer = std::unique_ptr<Direct3D9Renderer>(new Direct3D9Renderer(device));
+	auto renderer = std::make_unique< Direct3D9Renderer >( device );
 	
 	//2. and initialize the OSHGui with it
 	Application::Initialize(std::move(renderer));
@@ -29,21 +29,24 @@ void InitializeOSHGui(LPDIRECT3DDEVICE9 device)
 	auto &app = Application::Instance();
 
 	//3. create a font which will be used by the OSHGui
-	auto font = FontManager::LoadFont("Arial", 8.0f, false); //Arial, 8PT, no anti-aliasing
+	auto font = FontManager::LoadFont("Verdana", 7.0f, true); //Arial, 8PT, no anti-aliasing
+	auto fontBold = FontManager::LoadFont("Verdana Bold", 7.0f, true); //Arial, 8PT, no anti-aliasing
 	app.SetDefaultFont(font);
 
 	//4. create our form
 	auto form = std::make_shared<Form>();
-	form->SetText("Test");
 	form->SetLocation( PointI( 6, 10 ) );
 	form->SetSize( SizeI( 600, 400 ) );
 
 	CheckBox* check = new CheckBox( );
+	check->SetBackColor( Color::FromRGB( 206, 115, 136 ) );
 	check->SetText( "Checkbox" );
 	check->SetLocation( PointI( 14, 15 ) );
 	check->SetFont( font );
 
 	TrackBar* track = new TrackBar( );
+	track->SetFont( fontBold );
+	track->SetBackColor( Color::FromRGB( 206, 115, 136 ) );
 	track->SetPrecision( 1 );
 	track->SetLocation( PointI( 30, 40 ) );
 	track->SetText( "Slider" );
@@ -51,6 +54,7 @@ void InitializeOSHGui(LPDIRECT3DDEVICE9 device)
 	track->SetMaximum( 180 );
 
 	ComboBox* combo = new ComboBox( );
+	combo->SetBackColor( Color::FromRGB( 206, 115, 136 ) );
 	combo->SetLocation( PointI( 34, 65 ) );
 	combo->SetFont( font );
 	combo->SetMaxShowItems( 6 );
@@ -85,29 +89,30 @@ void InitializeOSHGui(LPDIRECT3DDEVICE9 device)
 	button->SetForeColor( Color::FromARGB( 255, 201, 201, 201 ) );
 
 	TabPage* page = new TabPage( );
-	page->SetText( "Legitbot" );
+	page->SetText( "Tab 1" );
 
 	TabPage* page2 = new TabPage( );
-	page2->SetText( "Ragebot" );
+	page2->SetText( "Tab 2" );
 
 	TabPage* page3 = new TabPage( );
-	page3->SetText( "Visuals" );
+	page3->SetText( "Tab 3" );
 
 	TabPage* page4 = new TabPage( );
-	page4->SetText( "Miscellaneous" );
+	page4->SetText( "Tab 4" );
 
 	TabPage* page5 = new TabPage( );
-	page5->SetText( "Config" );
+	page5->SetText( "Tab 5" );
 
 	TabControl* tab = new TabControl( );
 	tab->SetSize( 576, 380 );
 	tab->SetLocation( PointI( 6, -15 ) );
+	tab->SetButtonWidth( 116 );
 	tab->AddTabPage( page );
 	tab->AddTabPage( page2 );
 	tab->AddTabPage( page3 );
 	tab->AddTabPage( page4 );
 	tab->AddTabPage( page5 );
-	tab->SetBackColor( Color::FromARGB( 255, 32, 32, 32 ) );
+	tab->SetBackColor( Color::FromARGB( 255, 32, 32, 38 ) );
 
 	page->AddControl( groupbox );
 	groupbox->AddControl( check );

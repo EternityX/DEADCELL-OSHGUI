@@ -1,4 +1,4 @@
-/*
+ï»¿/*
 * OldSchoolHack GUI
 *
 * by KN4CK3R https://www.oldschoolhack.me/
@@ -35,13 +35,13 @@ namespace OSHGui
 		TrackBar();
 
 		/**
-		* Legt die Höhe und Breite des Steuerelements fest.
+		* Legt die Hï¿½he und Breite des Steuerelements fest.
 		*
 		* \param size
 		*/
 		virtual void SetSize( const Drawing::SizeI &size ) override;
 		/**
-		* Legt den minimalen Wert für die Schiebereglerposition auf der TrackBar fest.
+		* Legt den minimalen Wert fï¿½r die Schiebereglerposition auf der TrackBar fest.
 		*
 		* \param minimum
 		*/
@@ -50,19 +50,19 @@ namespace OSHGui
 		void SetPrecision( int precision );
 		int GetPrecision() const;
 		/**
-		* Ruft den minimalen Wert für die Schiebereglerposition auf der TrackBar ab.
+		* Ruft den minimalen Wert fï¿½r die Schiebereglerposition auf der TrackBar ab.
 		*
 		* \return minimum
 		*/
 		int GetMinimum() const;
 		/**
-		* Legt den maximalen Wert für die Schiebereglerposition auf der TrackBar fest.
+		* Legt den maximalen Wert fï¿½r die Schiebereglerposition auf der TrackBar fest.
 		*
 		* \param maximum
 		*/
 		void SetMaximum( float maximum );
 		/**
-		* Ruft den maximalen Wert für die Schiebereglerposition auf der TrackBar ab.
+		* Ruft den maximalen Wert fï¿½r die Schiebereglerposition auf der TrackBar ab.
 		*
 		* \return maximum
 		*/
@@ -91,8 +91,9 @@ namespace OSHGui
 		* \return der aktuelle Wert
 		*/
 		float GetValue() const;
+		void SetAppendText( std::string text );
 		/**
-		* Ruft das ValueChangedEvent für das Steuerelement ab.
+		* Ruft das ValueChangedEvent fï¿½r das Steuerelement ab.
 		*
 		* \return valueChangedEvent
 		*/
@@ -132,11 +133,10 @@ namespace OSHGui
 		int precision_;
 		float pixelsPerTick_;
 		bool drag_;
+		std::string appendText_;
 
 		Drawing::PointI sliderLocation_;
 		Drawing::PointI sliderAbsoluteLocation_;
-
-		Drawing::PointI minusAbsoluteLocation_;
 
 		std::unique_ptr<Label> label_;
 		std::unique_ptr<Label> label_value_;

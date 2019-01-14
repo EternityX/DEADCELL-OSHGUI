@@ -14,6 +14,7 @@
 #include <iomanip>
 #include "Drawing/FontManager.hpp"
 #include "Timer.hpp"
+#include <iostream>
 
 namespace OSHGui
 {
@@ -23,7 +24,7 @@ namespace OSHGui
 	const Drawing::SizeI TrackBar::GrabSize( Drawing::SizeF( SliderSize.Width - 9, 7 ) );
 	const Drawing::SizeI TrackBar::SliderSize( 8, 16 );
 	const Drawing::SizeI TrackBar::DefaultSize( 166, TrackBar::SliderSize.Height + 2 );
-	const Drawing::PointI TrackBar::DefaultLabelOffset( 4, -7 );
+	const Drawing::PointI TrackBar::DefaultLabelOffset( 4, -5 );
 	//---------------------------------------------------------------------------
 	//Constructor
 	//---------------------------------------------------------------------------
@@ -38,15 +39,6 @@ namespace OSHGui
 		label_value_( new Label() )
 	{
 		type_ = ControlType::TrackBar;
-
-		OSHGui::Timer *timer = new OSHGui::Timer();
-		timer->SetInterval( 10 );
-		timer->Start();
-		AddControl( timer );
-
-		timer->GetTickEvent() += OSHGui::TickEventHandler( [ this ]( Control *sender ) {
-			SetBackColor( OSHGui::Application::Instance().GetPrimaryColor() );
-		});
 
 		SetSize( DefaultSize );
 
@@ -152,6 +144,11 @@ namespace OSHGui
 		return value_ + minimum_;
 	}
 	//---------------------------------------------------------------------------
+	void TrackBar::SetAppendText( std::string text )
+	{
+		appendText_ = text;
+	}
+	//---------------------------------------------------------------------------
 	ValueChangedEvent& TrackBar::GetValueChangedEvent()
 	{
 		return valueChangedEvent_;
@@ -163,18 +160,18 @@ namespace OSHGui
 	{
 		std::stringstream string_stream;
 
-		pixelsPerTick_ = ( float ) ( GetWidth() - SliderSize.Width ) / ( ( maximum_ - minimum_ ) / tickFrequency_ );
+		pixelsPerTick_ = (float)( GetWidth() - SliderSize.Width ) / ( ( maximum_ - minimum_ ) / tickFrequency_ );
 
 		if( value < 0 )
 			value = 0;
+
 		if( value > maximum_ - minimum_ )
 			value = maximum_ - minimum_;
 
-		string_stream << std::fixed << std::setprecision( precision_ ) << value + minimum_;
+		string_stream << std::fixed << std::setprecision( precision_ ) << value + minimum_ << appendText_;
 		label_value_->SetText( string_stream.str() );
 
-		if( value_ != value )
-		{
+		if( value_ != value ) {
 			value_ = value;
 
 			valueChangedEvent_.Invoke( this );
@@ -203,7 +200,6 @@ namespace OSHGui
 		Control::CalculateAbsoluteLocation();
 
 		sliderAbsoluteLocation_ = absoluteLocation_ + sliderLocation_;
-		minusAbsoluteLocation_ = absoluteLocation_ - Drawing::PointI( 5, 0 );
 
 		label_->SetParent( this );
 		label_value_->SetParent( this );
@@ -215,31 +211,7 @@ namespace OSHGui
 
 		Graphics g( *geometry_ );
 
-		const auto color = isFocused_ || isInside_ ? Color::FromARGB( 255, 46, 46, 52 ) : Color::FromARGB( 255, 36, 36, 44 );
-
-		/*if (!GetBackColor().IsTranslucent())
-		{
-		g.FillRectangleGradient(ColorRectangle(color, Color::FromARGB(255, 45, 45, 45)), sliderLocation_, SizeI( SliderSize.Width, 9 ) );
-		}*/
-
-		//float x;
-		//const auto tickCount = 1 + (maximum_ - minimum_) / tickFrequency_;
-		//for (auto i = 0; i < tickCount; ++i)
-		//{
-		//	x = SliderSize.Width / 2 + i * pixelsPerTick_ + 1;
-		//	//g.FillRectangleGradient(Color::FromARGB(255, 5, 5, 5), PointF(x - 1, DefaultTickOffset), SizeF(2, 9));
-		//	
-		//}
-
-		//// minus
-		//if( value_ != minimum_ )
-		//	g.FillRectangle( Color::FromARGB( 255, 100, 100, 100 ), PointF( -4, 10 ), SizeF( 3, 1 ) );
-
-		//// plus
-		//if( value_ != maximum_ ) {
-		//	g.FillRectangle( Color::FromARGB( 255, 100, 100, 100 ), PointF( GetRight() - 40, 10 ), SizeF( 3, 1 ) );
-		//	g.FillRectangle( Color::FromARGB( 255, 100, 100, 100 ), PointF( GetRight() - 39, 9 ), SizeF( 1, 3 ) );
-		//}
+		const auto color = isFocused_ || isInside_ ? Color::FromARGB( 255, 46, 46, 56 ) : Color::FromARGB( 255, 36, 36, 46 );
 
 		g.FillRectangleGradient( Color::FromARGB( 255, 18, 18, 24 ), PointF( 4, DefaultTickOffset ), SizeF( 160, 7 ) );
 		g.FillRectangleGradient( ColorRectangle( color, Color::FromARGB( 255, 55, 55, 62 ) ), PointF( 5, DefaultTickOffset + 1 ), SizeF( 158, 5 ) );
@@ -253,11 +225,6 @@ namespace OSHGui
 	void TrackBar::OnMouseDown( const MouseMessage &mouse )
 	{
 		Control::OnMouseDown( mouse );
-
-		/*if (Intersection::TestRectangle( Drawing::PointF( absoluteLocation_.X - 5, absoluteLocation_.Y ), Drawing::SizeF( 90, 90 ), mouse.GetLocation())) {
-			SetValueInternal( value_ - 1 );
-			OnGotMouseCapture();
-		}*/
 
 		drag_ = true;
 		OnGotMouseCapture();
@@ -316,15 +283,15 @@ namespace OSHGui
 			case Key::End:
 				SetValueInternal( maximum_ - minimum_ );
 				break;
-			/*case Key::Left:
-				SetValueInternal( value_ - 0.1f );
-				break;*/
+			case Key::Left:
+				SetValueInternal( value_ - 1.f );
+				break;
 			case Key::Down:
 				SetValueInternal( value_ - 1 );
 				break;
-			/*case Key::Right:
-				SetValueInternal( value_ + 0.1f );
-				break;*/
+			case Key::Right:
+				SetValueInternal( value_ + 1.f );
+				break;
 			case Key::Up:
 				SetValueInternal( value_ + 1 );
 				break;
